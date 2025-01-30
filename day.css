@@ -1,0 +1,78 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.container {
+    width: 1000px;
+    height: 800px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px #9a9a9a;
+    overflow: hidden;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+#showing-date {
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    height: 40px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.scroll-box {
+  flex: 1; 
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.hourlyTimeSlots {
+    border: 1px solid rgb(175, 174, 174);
+    height: 70px;
+    cursor: pointer;
+}
+
+.booked {
+    background-color: #d1f7c4;
+    color: #333;
+}
+
+.event-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
