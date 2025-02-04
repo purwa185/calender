@@ -12,67 +12,112 @@ body {
   min-height: 100vh;
   background-color: #f5f5f5;
 }
-
+span{
+    color: #d1e7dd;
+    font-weight: bold;
+    font-size: large;
+}
 .container {
-    width: 1000px;
-    height: 800px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px #9a9a9a;
-    overflow: hidden;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
+  width: 1000px;
+  height: 800px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px #9a9a9a;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 
 #showing-date {
-    border: 2px solid rgba(0, 0, 0, 0.1);
-    height: 40px;
-    padding: 10px;
-    margin-bottom: 10px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  height: 40px;
+  padding: 10px;
+  padding-bottom: 10px ;
 }
 
 .scroll-box {
-  flex: 1; 
+  flex: 1;
   padding: 10px;
   overflow-y: auto;
 }
 
 .hourlyTimeSlots {
-    border: 1px solid rgb(175, 174, 174);
-    height: 70px;
-    cursor: pointer;
+  border: 1px solid rgb(175, 174, 174);
+  height: 70px;
+  cursor: pointer;
+  background-color: rgb(239, 239, 239);
 }
 
-.booked {
-    background-color: #d1f7c4;
-    color: #333;
-}
-
-.event-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 300px;
-    text-align: center;
+  background-color: white;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 300px;
+  text-align: center;
 }
 
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 20px;
-    cursor: pointer;
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.booked {
+  background-color:  #e3d8db; 
+  border: 2px solid  #ad153b; 
+  border-radius: 15px;
+  color:  #a54c62; 
+  display: flex;
+  flex-direction: column;
+}
+
+/* Styling for event name */
+.booked h4 {
+  display: inline-block;
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* Styling for event description and attendees */
+.booked p {
+  display: inline-block;
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color:  #a54c62;
+}
+
+.event-details{
+    display: inline-block;
+}
+
+.scroll-box{
+    background-color: #a54c6e;
+}
+
+#showing-date{
+    background-color: #a54c6e;
 }

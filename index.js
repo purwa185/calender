@@ -74,7 +74,7 @@ setDateBtn.addEventListener('click', () => {
 function displayCalender(){
     const month = currentDate.getMonth();
     const year = currentDate.getFullYear();
-    const firstDay = new Date(year, month, 1).getDay();
+    const firstDay = new Date(year, month, 1).getDay(); 
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     
     const existingDays = calendarGrid.querySelectorAll('.day');
@@ -125,7 +125,6 @@ calendarGrid.addEventListener('click', function(event) {
         }
     }
 });
-
 calendarGrid.addEventListener('dblclick', function(event) {
     if (event.target.classList.contains('day') && !event.target.classList.contains('empty')) {
         const selectedDay = parseInt(event.target.textContent);
