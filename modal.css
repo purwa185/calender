@@ -1,0 +1,140 @@
+/* Modal Background */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Modal Content Box */
+  .modal-content {
+    background: #fff;
+    padding: 20px;
+    width: 380px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+    text-align: center;
+  }
+  
+  /* Close Button */
+  .close {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    font-size: 22px;
+    cursor: pointer;
+    color: #444;
+    transition: color 0.3s;
+  }
+  
+  .close:hover {
+    color: red;
+  }
+  
+  /* Heading */
+  h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  /* Labels */
+  label {
+    font-weight: 600;
+    display: block;
+    margin: 10px 0 5px;
+    text-align: left;
+    color: #555;
+  }
+  
+  /* Input Fields */
+  input,
+  textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background: #f9f9f9;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  input:focus,
+  textarea:focus {
+    border-color: #007bff;
+    background: #fff;
+    outline: none;
+  }
+  
+  /* Textarea */
+  textarea {
+    height: 80px;
+    resize: none;
+  }
+  
+  /* Buttons */
+  button {
+    margin-top: 15px;
+    padding: 10px;
+    width: 48%;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease-in-out, transform 0.2s;
+  }
+  
+  #saveEvent {
+    background: #28a745;
+    color: white;
+  }
+  
+  #saveEvent:hover {
+    background: #218838;
+    transform: scale(1.05);
+  }
+  
+  #deleteEvent {
+    background: #dc3545;
+    color: white;
+  }
+  
+  #deleteEvent:hover {
+    background: #c82333;
+    transform: scale(1.05);
+  }
+  
+  /* Fade-in Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 450px) {
+    .modal-content {
+      width: 90%;
+    }
+    button {
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
+  
