@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calender2</title>
+    <title>Calendar</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -106,9 +106,9 @@
       <div class="section-right" id="content">
         <!-- Content for right section -->
       </div>
-      <div id="eventModal2" class="modal2">
-        <div class="modal-content2">
-          <span id="closeModal2" class="close2">&times;</span>
+      <div id="eventModal2" class="modal">
+        <div class="modal-content">
+          <span id="closeModal2" class="close">&times;</span>
           <h2>Create Event</h2>
           <form id="eventForm2">
             <label for="eventName2">Event Name:</label>
@@ -125,7 +125,31 @@
       
             <div class="modal-buttons2">
               <button type="submit">Save Event</button>
-              <button type="button" id="deleteEvent2" class="delete-button2">Delete Event</button>
+              <button type="delete" class="delete-button2">Delete Event</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div id="eventModal3" class="modal">
+        <div class="modal-content">
+          <span id="closeModal3" class="close">&times;</span>
+          <h2>Create Event</h2>
+          <form id="eventForm3">
+            <label for="eventName3">Event Name:</label>
+            <input type="text" id="eventName3" name="eventName3" required />
+      
+            <label for="eventDescription3">Event Description:</label>
+            <textarea id="eventDescription3" name="eventDescription3" required></textarea>
+      
+            <label for="eventStartTime3">Event Start Time:</label>
+            <input type="time" id="eventStartTime3" name="eventStartTime3" required />
+      
+            <label for="eventEndTime3">Event End Time:</label>
+            <input type="time" id="eventEndTime3" name="eventEndTime3" required />
+      
+            <div class="modal-buttons3">
+              <button type="submit">Save Event</button>
+              <button type="delete" class="delete-button3">Delete Event</button>
             </div>
           </form>
         </div>

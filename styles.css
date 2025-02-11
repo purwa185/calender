@@ -263,7 +263,7 @@ ul {
   grid-auto-rows: 60px;
   padding: 10px;
   padding-left: 30px;
-  padding-top: 90px;
+  padding-top: 15px;
   overflow-y: auto;
 }
 
@@ -275,7 +275,7 @@ ul {
   justify-content: center;
 }
 
-.modal,.modal2 {
+.modal {
   display: none;
   position: fixed;
   z-index: 1000;
@@ -288,7 +288,7 @@ ul {
   animation: fadeIn 0.3s ease-out;
 }
 
-.modal-content,.modal-content2 {
+.modal-content {
   background-color: #fff;
   margin: 10% auto;
   padding: 30px;
@@ -301,7 +301,7 @@ ul {
   position: relative;
 }
 
-.close,.close2 {
+.close {
   color: #aaa;
   font-size: 36px;
   font-weight: bold;
@@ -310,8 +310,8 @@ ul {
   right: 20px;
 }
 
-.close,.close2:hover,
-.close,.close2:focus {
+.close:hover,
+.close:focus {
   color: #333;
   text-decoration: none;
   cursor: pointer;
@@ -387,17 +387,16 @@ button:active {
   }
 }
 
-.delete-button2 {
+.delete-button2, .delete-button3{
     background-color: rgb(191, 43, 43);
     color: white;
     border: none;
     margin-top: 10px;
     padding: 10px 15px;
     cursor: pointer;
-    
   }
-  
-  .delete-button2:hover {
+
+  .delete-button2:hover, .delete-button3:hover {
     background-color: darkred;
   }
 
@@ -421,3 +420,27 @@ button:active {
     flex-direction: column;
 }
 
+.week-header {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  padding-top: 20px;
+  font-weight: 580;
+  font-size: large;
+  position: relative;
+  left: 10px;
+}
+
+.day-box {
+  width: 100px;
+  text-align: center;
+}
+
+.weekTimeSlotEN, .weekTimeSlotED {
+  font-size: 9px; 
+  text-align: center;
+}
+
+.currantDay{
+  background-color: #00204f;
+}
