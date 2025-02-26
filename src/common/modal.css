@@ -1,0 +1,124 @@
+.modal {
+    /* display: none; */
+    position: fixed;
+    z-index: 10;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: auto;
+    margin-top: 70px;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 50%;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease-out;
+    position: relative;
+  }
+
+  .close {
+    color: #aaa;
+    font-size: 36px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  h2 {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    font-size: 16px;
+    margin: 10px 0 5px;
+    color: #555;
+  }
+  
+  input[type="date"],input[type="text"],
+  textarea,
+  input[type="time"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+  }
+  
+  input[type="text"]:focus,
+  textarea:focus,
+  input[type="time"]:focus {
+    border-color: #6099ee;
+    outline: none;
+  }
+  
+  button {
+    width: 100%;
+    padding: 12px;
+    background-color: #6099ee;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #0d68f1;
+  }
+  
+  button:active {
+    background-color: #126aef;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes slideIn {
+    from {
+      transform: translateY(-50%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  
+  .delete-button {
+    background-color: rgb(191, 43, 43);
+    color: white;
+    border: none;
+    margin-top: 10px;
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+  
+  .delete-button:hover {
+    background-color: darkred;
+  }

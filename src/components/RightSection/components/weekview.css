@@ -1,0 +1,113 @@
+.week-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-y: auto;
+}
+.week-header {
+   display: flex;
+   border-bottom: 1px solid rgb(194, 194, 194);
+} 
+
+.weekview-header {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding: 10px;
+  padding-top: 20px;
+  margin-bottom: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.day-in-weekview-header {
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  color: rgb(45, 45, 45);
+}
+.date-in-weekview-header {
+  font-size: 24px;
+  font-weight: bold;
+  color: rgb(87, 87, 87);
+}
+.time-column {
+  width: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 1px solid #ddd;
+  padding-left: 35px;
+  padding-right: 5px;
+}
+
+.time-slot {
+  height: 60px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #666;
+  position: relative;
+  bottom: 5px;
+}
+
+.week-grid {
+  display: flex;
+  width: 100%;
+  flex: 1;
+}
+
+.day-column {
+  flex: 1;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  border-right: 1px solid #ddd;
+}
+
+.calendar-cell {
+  height: 59px;
+  border-top: 1px solid #eee;
+  cursor: pointer; 
+}
+
+.calendar-cell:hover {
+  background: rgba(0, 123, 255, 0.1);
+}
+
+.week-event {
+  position: absolute;
+  left: 5%;
+  width: 90%;
+  background-color: rgb(30, 135, 247);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  overflow: hidden;
+  pointer-events: auto;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 5px 8px;
+  box-sizing: border-box;
+}
+
+.week-event-name-div {
+  font-weight: bold;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.week-event-description-div {
+  font-size: 12px;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  max-height: 40px;
+  line-height: 1.2;
+}
