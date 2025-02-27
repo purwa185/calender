@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./modal.css";
 import { useCalendar } from "../contexts/CalendarContext";
-import { lightFormat } from "date-fns";
+import { getDate, lightFormat, startOfWeek, getDay } from "date-fns";
 
 const Modal = () => {
   const { displayModal, setDisplayModal } = useCalendar();
   const { selectedDate, setSelectedDate } = useCalendar();
   const { modalInputValue, setModalInputValue } = useCalendar();
   const { arrayList, setArrayList } = useCalendar();
-  const {weekArrayList, setWeekArrayList} = useCalendar();
+  const { weekArrayList, setWeekArrayList } = useCalendar();
 
   const [eventDate, setEventDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -18,7 +18,6 @@ const Modal = () => {
   const [eventDescription, setEventDescription] = useState("");
   const [eventStartTime, setEventStartTime] = useState("");
   const [eventEndTime, setEventEndTime] = useState("");
-  const [tempArrayList, setTempArrayList] = useState([]);
 
   useEffect(() => {
     setEventDate(modalInputValue.eventDate || "");
@@ -40,28 +39,20 @@ const Modal = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-   
-    let tempArrayList=[];
-
+    let tempArrayList = [];
     const eventDateObj = new Date(eventDate);
     const selectedDateStr = lightFormat(new Date(selectedDate), "yyyy-MM-dd");
     const eventDateStr = eventDateObj.toISOString().split("T")[0];
-    console.log(`Selected Date: ${selectedDateStr}`);
-    console.log(`Event Date: ${eventDateStr}`);
-  
+
     if (selectedDateStr === eventDateStr) {
-      console.log("same");
-      tempArrayList=arrayList;
-      console.log(tempArrayList);
+      tempArrayList = arrayList;
     } else {
-      console.log("notsame");
       const key = eventDateStr;
       const savedList = localStorage.getItem(key);
       if (savedList) {
-       tempArrayList = JSON.parse(savedList);
+        tempArrayList = JSON.parse(savedList);
       }
     }
-    
     const newEvent = {
       eventDate: eventDate,
       eventName: eventName,
@@ -69,19 +60,16 @@ const Modal = () => {
       eventStartTime: eventStartTime,
       eventEndTime: eventEndTime,
     };
-
     const timeToMinutes = (time) => {
       const [hours, minutes] = time.split(":").map(Number);
       return hours * 60 + minutes;
     };
-
     const eventStart = timeToMinutes(eventStartTime);
     const eventEnd = timeToMinutes(eventEndTime);
 
     const isOverlapping = tempArrayList.some((event) => {
       const existingStart = timeToMinutes(event.eventStartTime);
       const existingEnd = timeToMinutes(event.eventEndTime);
-
       return (
         (eventStart > existingStart && eventStart < existingEnd) ||
         (eventEnd > existingStart && eventEnd < existingEnd) ||
@@ -105,8 +93,23 @@ const Modal = () => {
     } else {
       updatedList.push(newEvent);
     }
+
+    const isSameWeek = (date1, date2) => {
+      const startOfWeek1 = startOfWeek(date1, { weekStartsOn: 0 });
+      const startOfWeek2 = startOfWeek(date2, { weekStartsOn: 0 });
+      return startOfWeek1.getTime() === startOfWeek2.getTime();
+    };
     if (selectedDateStr === eventDateStr) {
       setArrayList(updatedList);
+    } else if (isSameWeek(new Date(selectedDate), eventDateObj)) {
+      const eventIndex = getDay(eventDateObj);
+      if (eventIndex !== -1) {
+        const updatedWeekArray = [...weekArrayList];
+        updatedWeekArray[eventIndex] = updatedList;
+        setWeekArrayList(updatedWeekArray);
+        const key = eventDateStr;
+        localStorage.setItem(key, JSON.stringify(updatedList));
+      }
     } else {
       const key = eventDateStr;
       localStorage.setItem(key, JSON.stringify(updatedList));
@@ -116,7 +119,26 @@ const Modal = () => {
 
   const handleDelete = (e) => {
     e.preventDefault();
-    let updatedList = [...arrayList];
+
+    let tempArrayList = [];
+    //here i have first checked if the if the selected date is same as the eventDate.
+    const eventDateObj = new Date(eventDate);
+    const selectedDateStr = lightFormat(new Date(selectedDate), "yyyy-MM-dd");
+    const eventDateStr = eventDateObj.toISOString().split("T")[0];
+    console.log(`Selected Date: ${selectedDateStr}`);
+    console.log(`Event Date: ${eventDateStr}`);
+    //if it is same then we will simply update the tempArrayList.
+    if (selectedDateStr === eventDateStr) {
+      tempArrayList = arrayList;
+    } else {
+      const key = eventDateStr;
+      const savedList = localStorage.getItem(key);
+      if (savedList) {
+        tempArrayList = JSON.parse(savedList);
+      }
+    }
+
+    let updatedList = [...tempArrayList];
     const eventIndex = updatedList.findIndex(
       (event) =>
         event.eventStartTime === eventStartTime &&
@@ -125,9 +147,27 @@ const Modal = () => {
     if (eventIndex !== -1) {
       updatedList.splice(eventIndex, 1);
     }
-    setArrayList(updatedList);
+    const isSameWeek = (date1, date2) => {
+      const startOfWeek1 = startOfWeek(date1, { weekStartsOn: 0 });
+      const startOfWeek2 = startOfWeek(date2, { weekStartsOn: 0 });
+      return startOfWeek1.getTime() === startOfWeek2.getTime();
+    };
+    if (selectedDateStr === eventDateStr) {
+      setArrayList(updatedList);
+    } else if (isSameWeek(new Date(selectedDate), eventDateObj)) {
+      const eventIndex = getDay(eventDateObj);
+      if (eventIndex !== -1) {
+        const updatedWeekArray = [...weekArrayList];
+        updatedWeekArray[eventIndex] = updatedList;
+        setWeekArrayList(updatedWeekArray);
+        const key = eventDateStr;
+        localStorage.setItem(key, JSON.stringify(updatedList));
+      }
+    } else {
+      const key = eventDateStr;
+      localStorage.setItem(key, JSON.stringify(updatedList));
+    }
     setDisplayModal(false);
-    console.log(arrayList);
   };
 
   return (
