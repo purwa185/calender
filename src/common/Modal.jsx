@@ -121,13 +121,11 @@ const Modal = () => {
     e.preventDefault();
 
     let tempArrayList = [];
-    //here i have first checked if the if the selected date is same as the eventDate.
     const eventDateObj = new Date(eventDate);
     const selectedDateStr = lightFormat(new Date(selectedDate), "yyyy-MM-dd");
     const eventDateStr = eventDateObj.toISOString().split("T")[0];
     console.log(`Selected Date: ${selectedDateStr}`);
     console.log(`Event Date: ${eventDateStr}`);
-    //if it is same then we will simply update the tempArrayList.
     if (selectedDateStr === eventDateStr) {
       tempArrayList = arrayList;
     } else {

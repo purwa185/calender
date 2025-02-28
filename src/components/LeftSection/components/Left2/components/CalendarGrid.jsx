@@ -4,11 +4,13 @@ import { useCalendar } from "../../../../../contexts/CalendarContext.jsx";
 
 const CalendarGrid = () => {
   const { selectedDate, setSelectedDate } = useCalendar();
-  
   const startofmonth = startOfMonth(new Date(selectedDate));
   const endofmonth = endOfMonth(new Date(selectedDate));
   const firstDay = getDay(startofmonth);
   const daysInMonth = getDaysInMonth(new Date(selectedDate));
+  const month = getMonth(selectedDate);
+  const year= getYear(selectedDate);
+  const currentDate = new Date();
 
   const selectDate = (index) =>{
     const year = getYear(new Date(selectedDate));
@@ -17,7 +19,9 @@ const CalendarGrid = () => {
     const timestamp= getTime(newDate);
     setSelectedDate(getTime(newDate));
   }
-  
+
+  const isToday = (day) => day === currentDate.getDate() && month === currentDate.getMonth() && year === currentDate.getFullYear();
+
   return (
     <div className="calendar-grid">
       <div className="weekday">S</div>
@@ -31,7 +35,7 @@ const CalendarGrid = () => {
         <div key={`empty-${index}`} className="day"></div>
       ))}
       {Array.from({ length: daysInMonth }, (_, index) => (
-        <div key={`day-${index + 1}`} className="day" onClick={() => selectDate(index+1)}>
+        <div key={`day-${index + 1}`} className={` day ${isToday(index+1) ? "current-date-in-calendar" : ""}`}  onClick={() => selectDate(index+1)}>
           {index + 1}
         </div>
       ))}

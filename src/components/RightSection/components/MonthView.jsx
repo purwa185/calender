@@ -9,6 +9,7 @@ const Calendar = () => {
   const year = selectedDateObj.getFullYear();
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const currentDate = new Date();
 
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   let k = 0;
@@ -26,10 +27,18 @@ const Calendar = () => {
   }
 
   for (let day = 1; day <= daysInMonth; day++) {
-    calendarDays.push(
+    const isToday = (day) =>
+      day === currentDate.getDate() &&
+      month === currentDate.getMonth() &&
+      year === currentDate.getFullYear();
+    
+    
+    const dateObj = calendarDays.push(
       <div key={day} className="calendar-day">
+        <div>
         {k < 7 && <span className="day-name">{daysOfWeek[k]}</span>}
-        <span className="date">{day}</span>
+        <span className={`date ${isToday(day) ? "current-date" : ""}`}>{day}</span>
+        </div>
       </div>
     );
     k++;
