@@ -59,3 +59,15 @@
   color: white;
 }
 
+.event-badge {
+  background-color:  rgb(1, 67, 139);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 40%;
+  padding: 4px 7px;
+  position: absolute;
+  top: 70px;
+  right: 110px;
+}
+

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./modal.css";
 import { useCalendar } from "../contexts/CalendarContext";
-import { getDate, lightFormat, startOfWeek, getDay } from "date-fns";
+import { getDate, lightFormat, startOfWeek, getDay, getMonth, getYear} from "date-fns";
 
 const Modal = () => {
   const { displayModal, setDisplayModal } = useCalendar();
@@ -9,6 +9,7 @@ const Modal = () => {
   const { modalInputValue, setModalInputValue } = useCalendar();
   const { arrayList, setArrayList } = useCalendar();
   const { weekArrayList, setWeekArrayList } = useCalendar();
+  const { monthlyEventCount, setMonthlyEventCount } = useCalendar();
 
   const [eventDate, setEventDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -43,6 +44,12 @@ const Modal = () => {
     const eventDateObj = new Date(eventDate);
     const selectedDateStr = lightFormat(new Date(selectedDate), "yyyy-MM-dd");
     const eventDateStr = eventDateObj.toISOString().split("T")[0];
+    const selectedMonth = getMonth(new Date(selectedDate));
+    const selectedYear = getYear(new Date(selectedDate));
+    const eventMonth = getMonth(eventDateObj);
+    const eventYear = getYear(eventDateObj);
+
+    const isSameMonth = selectedMonth === eventMonth && selectedYear === eventYear;
 
     if (selectedDateStr === eventDateStr) {
       tempArrayList = arrayList;
@@ -82,6 +89,7 @@ const Modal = () => {
       );
       return;
     }
+    let isNewEvent = false;
     let updatedList = [...tempArrayList];
     const eventIndex = updatedList.findIndex(
       (event) =>
@@ -92,6 +100,7 @@ const Modal = () => {
       updatedList[eventIndex] = newEvent;
     } else {
       updatedList.push(newEvent);
+      isNewEvent = true;
     }
 
     const isSameWeek = (date1, date2) => {
@@ -114,6 +123,22 @@ const Modal = () => {
       const key = eventDateStr;
       localStorage.setItem(key, JSON.stringify(updatedList));
     }
+
+    if (isSameMonth) {
+      const key = eventDateStr;
+      localStorage.setItem(key, JSON.stringify(updatedList));
+
+      if (isNewEvent) {
+        setMonthlyEventCount((prev) =>
+          prev.map((entry) =>
+            entry.date === eventDateStr
+              ? { ...entry, count: entry.count + 1 }
+              : entry
+          )
+        );
+      }
+    }
+
     setDisplayModal(false);
   };
 

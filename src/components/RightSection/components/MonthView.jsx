@@ -2,11 +2,12 @@ import React from "react";
 import { useCalendar } from "../../../contexts/CalendarContext";
 import "./monthview.css";
 import { VIEW_MODE } from "../../../constants/constants";
-import { getMonth, getYear, getTime } from "date-fns";
+import { getMonth, getYear, getTime, lightFormat } from "date-fns";
 
 const Calendar = () => {
   const { selectedDate, setSelectedDate } = useCalendar();
   const { selectedView, setSelectedView } = useCalendar();
+  const { monthlyEventCount, setMonthlyeEventCount } = useCalendar();
   const selectedDateObj = new Date(selectedDate);
   const month = selectedDateObj.getMonth();
   const year = selectedDateObj.getFullYear();
@@ -18,7 +19,7 @@ const Calendar = () => {
   let k = 0;
   let count = 0;
   const calendarDays = [];
-  
+
   const selectDate = (index) => {
     const year = getYear(new Date(selectedDate));
     const month = getMonth(new Date(selectedDate));
@@ -49,6 +50,13 @@ const Calendar = () => {
       month === selectedDateObj.getMonth() &&
       year === selectedDateObj.getFullYear();
 
+    const formattedDate = lightFormat(new Date(year, month, day), "yyyy-MM-dd");
+
+    const eventEntry = monthlyEventCount.find(
+      (entry) => entry.date === formattedDate
+    );
+    const eventCount = eventEntry ? eventEntry.count : 0;
+
     const dateObj = calendarDays.push(
       <div key={day} className="calendar-day">
         <div onClick={() => selectDate(day)}>
@@ -60,6 +68,9 @@ const Calendar = () => {
           >
             {day}
           </span>
+          {eventCount > 0 && (
+          <span className="event-badge">{eventCount}</span>
+        )}
         </div>
       </div>
     );

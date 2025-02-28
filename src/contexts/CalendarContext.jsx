@@ -11,7 +11,8 @@ export const CalendarProvider = ({ children }) => {
   const [displayModal, setDisplayModal] = useState(false);
   const [modalInputValue, setModalInputValue] = useState({});
   const [weekArrayList, setWeekArrayList] = useState([]);
-  
+  const [monthlyEventCount, setMonthlyEventCount] = useState([]);
+
   useEffect(() => {
     if (arrayList) {
       const key = lightFormat(new Date(selectedDate), "yyyy-MM-dd");
@@ -29,6 +30,33 @@ export const CalendarProvider = ({ children }) => {
     }
   }, [selectedDate]);
 
+  useEffect(()=>{
+    let tempWeekArrayList = [];
+    const weekStart = startOfWeek(new Date(selectedDate), { weekStartsOn: 0 });
+    for (let i = 0; i < 7; i++) {
+      let currentDate = addDays(weekStart, i);
+      let formattedDate = lightFormat(currentDate, "yyyy-MM-dd");
+      const storedList = localStorage.getItem(formattedDate);
+      tempWeekArrayList.push(storedList ? JSON.parse(storedList) : []);
+    }
+    setWeekArrayList(tempWeekArrayList);
+  },[selectedDate,arrayList])
+
+  useEffect(() => {
+    let tempEventCountArray = [];
+    const startDate = startOfMonth(new Date(selectedDate));
+    const endDate = endOfMonth(new Date(selectedDate));
+    let currentDate = startDate;
+    while (currentDate <= endDate) {
+      let formattedDate = lightFormat(currentDate, "yyyy-MM-dd");
+      const storedList = localStorage.getItem(formattedDate);
+      const eventList = storedList ? JSON.parse(storedList) : [];
+      tempEventCountArray.push({ date: formattedDate, count: eventList.length }); 
+      currentDate = addDays(currentDate, 1); 
+    }
+    setMonthlyEventCount(tempEventCountArray);
+    console.log(monthlyEventCount);
+  }, [selectedDate]);
 
   return (
     <CalendarContext.Provider
@@ -45,6 +73,7 @@ export const CalendarProvider = ({ children }) => {
         setModalInputValue,
         weekArrayList,
         setWeekArrayList,
+        monthlyEventCount, setMonthlyEventCount
       }}
     >
       {children}
