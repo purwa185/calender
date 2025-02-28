@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { VIEW_MODE } from "../constants/constants";
-import { lightFormat, startOfWeek, addDays } from "date-fns";
+import { lightFormat, startOfWeek, addDays, startOfMonth, endOfMonth } from "date-fns";
 
 const CalendarContext = createContext();
 
@@ -29,17 +29,6 @@ export const CalendarProvider = ({ children }) => {
     }
   }, [selectedDate]);
 
-  useEffect(()=>{
-    let tempWeekArrayList = [];
-    const weekStart = startOfWeek(new Date(selectedDate), { weekStartsOn: 0 });
-    for (let i = 0; i < 7; i++) {
-      let currentDate = addDays(weekStart, i);
-      let formattedDate = lightFormat(currentDate, "yyyy-MM-dd");
-      const storedList = localStorage.getItem(formattedDate);
-      tempWeekArrayList.push(storedList ? JSON.parse(storedList) : []);
-    }
-    setWeekArrayList(tempWeekArrayList);
-  },[selectedDate,arrayList])
 
   return (
     <CalendarContext.Provider
@@ -66,4 +55,3 @@ export const CalendarProvider = ({ children }) => {
 export const useCalendar = () => {
   return useContext(CalendarContext);
 };
-

@@ -1,9 +1,12 @@
 import React from "react";
 import { useCalendar } from "../../../contexts/CalendarContext";
 import "./monthview.css";
+import { VIEW_MODE } from "../../../constants/constants";
+import { getMonth, getYear, getTime } from "date-fns";
 
 const Calendar = () => {
   const { selectedDate, setSelectedDate } = useCalendar();
+  const { selectedView, setSelectedView } = useCalendar();
   const selectedDateObj = new Date(selectedDate);
   const month = selectedDateObj.getMonth();
   const year = selectedDateObj.getFullYear();
@@ -15,6 +18,15 @@ const Calendar = () => {
   let k = 0;
   let count = 0;
   const calendarDays = [];
+  
+  const selectDate = (index) => {
+    const year = getYear(new Date(selectedDate));
+    const month = getMonth(new Date(selectedDate));
+    const newDate = new Date(year, month, index);
+    const timestamp = getTime(newDate);
+    setSelectedDate(getTime(newDate));
+    setSelectedView(VIEW_MODE.DAY_VIEW);
+  };
 
   for (let i = 0; i < firstDay; i++) {
     calendarDays.push(
@@ -31,13 +43,23 @@ const Calendar = () => {
       day === currentDate.getDate() &&
       month === currentDate.getMonth() &&
       year === currentDate.getFullYear();
-    
-    
+
+    const isSelectedDate = (day) =>
+      day === selectedDateObj.getDate() &&
+      month === selectedDateObj.getMonth() &&
+      year === selectedDateObj.getFullYear();
+
     const dateObj = calendarDays.push(
       <div key={day} className="calendar-day">
-        <div>
-        {k < 7 && <span className="day-name">{daysOfWeek[k]}</span>}
-        <span className={`date ${isToday(day) ? "current-date" : ""}`}>{day}</span>
+        <div onClick={() => selectDate(day)}>
+          {k < 7 && <span className="day-name">{daysOfWeek[k]}</span>}
+          <span
+            className={`date ${isToday(day) ? "current-date" : ""} ${
+              isSelectedDate(day) ? "selected-date" : ""
+            }`}
+          >
+            {day}
+          </span>
         </div>
       </div>
     );
