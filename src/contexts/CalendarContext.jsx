@@ -55,7 +55,6 @@ export const CalendarProvider = ({ children }) => {
       currentDate = addDays(currentDate, 1); 
     }
     setMonthlyEventCount(tempEventCountArray);
-    console.log(monthlyEventCount);
   }, [selectedDate]);
 
   return (

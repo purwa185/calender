@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { format, lightFormat } from "date-fns";
 import { useCalendar } from "../../../contexts/CalendarContext";
 import "./dayview.css";
@@ -8,6 +9,7 @@ const DayView = () => {
   const { displayModal, setDisplayModal } = useCalendar();
   const { modalInputValue, setModalInputValue } = useCalendar();
   const { arrayList, setArrayList } = useCalendar();
+  const [draggedEvent, setDraggedEvent] = useState(null);
 
   const selectedDateObj = new Date(selectedDate);
   const hours = Array.from({ length: 26 }, (_, i) => i);
@@ -38,15 +40,79 @@ const DayView = () => {
     return hours * 60 + minutes;
   };
 
+  const minutesToTime = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours < 10 ? `0${hours}` : hours}:${mins < 10 ? "00" : mins}`;
+  };
+
+  const handleDragStart = (e, event, index) => {
+    setDraggedEvent({ ...event, index });
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    if (!draggedEvent) return;
+    const dropY =
+      e.clientY +
+      e.currentTarget.scrollTop -
+      e.currentTarget.getBoundingClientRect().top;
+    console.log(
+      e.clientY,
+      e.currentTarget.scrollTop,
+      e.currentTarget.getBoundingClientRect().top
+    );
+    const newStartMinutes = Math.round(dropY / 15) * 15;
+    const duration =
+      timeToMinutes(draggedEvent.eventEndTime) -
+      timeToMinutes(draggedEvent.eventStartTime);
+
+    const newStartTime = minutesToTime(newStartMinutes);
+    const newEndTime = minutesToTime(newStartMinutes + duration);
+
+    const isOverlap = arrayList.some((event, i) => {
+      if (i === draggedEvent.index) return false;
+      const eventStart = timeToMinutes(event.eventStartTime);
+      const eventEnd = timeToMinutes(event.eventEndTime);
+      const newStart = timeToMinutes(newStartTime);
+      const newEnd = timeToMinutes(newEndTime);
+      return !(newEnd <= eventStart || newStart >= eventEnd);
+    });
+
+    if (isOverlap) {
+      alert("Error: Event overlaps with an existing event!");
+      return;
+    }
+    const updatedEvents = arrayList.map((event, i) =>
+      i === draggedEvent.index
+        ? { ...event, eventStartTime: newStartTime, eventEndTime: newEndTime }
+        : event
+    );
+    setArrayList(updatedEvents);
+    setDraggedEvent(null);
+  };
+
   return (
     <div className="day-view">
       <header className="header">
         <div className="dayview-header">
-          <span className="day-in-dayview-header">{format(new Date(selectedDate), "eee")}</span>
-          <span className="date-in-dayview-header">{format(new Date(selectedDate), "d")}</span>
+          <span className="day-in-dayview-header">
+            {format(new Date(selectedDate), "eee")}
+          </span>
+          <span className="date-in-dayview-header">
+            {format(new Date(selectedDate), "d")}
+          </span>
         </div>
       </header>
-      <div className="day-grid-container">
+      <div
+        className="day-grid-container"
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
         <div className="day-grid">
           {hours.map((hour) => (
             <div
@@ -64,17 +130,21 @@ const DayView = () => {
             </div>
           ))}
         </div>
-        
+
         <div className="events-container">
           {arrayList.map((event, index) => {
             const eventStart = timeToMinutes(event.eventStartTime);
             const eventEnd = timeToMinutes(event.eventEndTime);
             const eventDuration = eventEnd - eventStart;
-            
+
             return (
               <div
                 key={index}
-                className="event"
+                className={`event ${
+                  draggedEvent?.index === index ? "dragging" : ""
+                }`}
+                draggable="true"
+                onDragStart={(e) => handleDragStart(e, event, index)}
                 style={{
                   top: `${eventStart}px`,
                   height: `${eventDuration}px`,

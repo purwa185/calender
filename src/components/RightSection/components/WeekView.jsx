@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React, { useState } from "react";
 import "./weekview.css";
 import { useCalendar } from "../../../contexts/CalendarContext";
 import { lightFormat } from "date-fns";
@@ -8,6 +8,7 @@ const WeekView = () => {
   const { modalInputValue, setModalInputValue } = useCalendar();
   const { weekArrayList, setWeekArrayList } = useCalendar();
   const { displayModal, setDisplayModal } = useCalendar();
+  const [draggedEvent, setDraggedEvent] = useState(null);
 
   const hours = Array.from({ length: 25 }, (_, i) => i);
 
@@ -26,7 +27,11 @@ const WeekView = () => {
     const [hours, minutes] = time.split(":").map(Number);
     return hours * 60 + minutes;
   };
-
+  const minutesToTime = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours < 10 ? `0${hours}` : hours}:${mins < 10 ? "00" : mins}`;
+  };
   const handleWeekSlotClick = (hour, date) => {
     console.log(date);
     let startTime = hour < 10 ? `0${hour}:00` : `${hour}:00`;
@@ -45,6 +50,63 @@ const WeekView = () => {
       eventDate: lightFormat(date, "yyyy-MM-dd"),
     });
     setDisplayModal(true);
+  };
+
+  const handleDragStart = (e, event, eventIndex, dayIndex) => {
+    setDraggedEvent({ ...event, eventIndex, dayIndex });
+  };
+
+  const handleDrop = (e, newHour, newDayIndex) => {
+    e.preventDefault();
+    if (!draggedEvent) return;
+    const boundingRect = e.currentTarget.getBoundingClientRect();
+    const offsetY = e.clientY - boundingRect.top;
+    let newMinutes = Math.round(offsetY);
+    newMinutes = Math.round(newMinutes / 15) * 15;
+    if (newMinutes >= 60) {
+      newHour += 1;
+      newMinutes = 0;
+    }
+    const formattedMinutes = newMinutes < 10 ? `0${newMinutes}` : newMinutes;
+    const newStartTime = `${
+      newHour < 10 ? `0${newHour}` : newHour
+    }:${formattedMinutes}`;
+    const eventDuration =
+      timeToMinutes(draggedEvent.eventEndTime) -
+      timeToMinutes(draggedEvent.eventStartTime);
+    const newEndTime = minutesToTime(
+      timeToMinutes(newStartTime) + eventDuration
+    );
+
+    const hasOverlap = weekArrayList[newDayIndex]?.some((event, i) => {
+      if (draggedEvent && i === draggedEvent.eventIndex) return false;
+      const existingStart = timeToMinutes(event.eventStartTime);
+      const existingEnd = timeToMinutes(event.eventEndTime);
+      const newStart = timeToMinutes(newStartTime);
+      const newEnd = timeToMinutes(newEndTime);
+
+      return !(newEnd <= existingStart || newStart >= existingEnd);
+    });
+
+    if (hasOverlap) {
+      alert("Cannot move event. Overlapping with another event.");
+      return;
+    }
+    const updatedWeekArrayList = [...weekArrayList];
+    updatedWeekArrayList[draggedEvent.dayIndex] = updatedWeekArrayList[
+      draggedEvent.dayIndex
+    ].filter((_, i) => i !== draggedEvent.eventIndex);
+    updatedWeekArrayList[newDayIndex] = [
+      ...(updatedWeekArrayList[newDayIndex] || []),
+      {
+        ...draggedEvent,
+        eventStartTime: newStartTime,
+        eventEndTime: newEndTime,
+        eventDate: lightFormat(daysOfWeek[newDayIndex], "yyyy-MM-dd"),
+      },
+    ];
+    setWeekArrayList(updatedWeekArrayList);
+    setDraggedEvent(null);
   };
 
   return (
@@ -79,6 +141,8 @@ const WeekView = () => {
                   key={hourIndex}
                   className="calendar-cell"
                   onClick={() => handleWeekSlotClick(hourIndex, date)}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => handleDrop(e, hourIndex, dayIndex)}
                 ></div>
               ))}
               {weekArrayList[dayIndex]?.map((event, eventIndex) => {
@@ -88,7 +152,17 @@ const WeekView = () => {
                 return (
                   <div
                     key={eventIndex}
-                    className="event-box"
+                    className={`event-box ${
+                      draggedEvent?.eventIndex === eventIndex &&
+                      draggedEvent?.dayIndex === dayIndex
+                        ? "dragging"
+                        : ""
+                    }`}
+                    draggable="true"
+                    onDragStart={(e) =>
+                      handleDragStart(e, event, eventIndex, dayIndex)
+                    }
+                    onDragEnd={(e) => setDraggedEvent(null)}
                     style={{
                       top: `${eventStart}px`,
                       height: `${eventDuration}px`,

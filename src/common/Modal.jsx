@@ -10,6 +10,7 @@ const Modal = () => {
   const { arrayList, setArrayList } = useCalendar();
   const { weekArrayList, setWeekArrayList } = useCalendar();
   const { monthlyEventCount, setMonthlyEventCount } = useCalendar();
+  
 
   const [eventDate, setEventDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -60,6 +61,7 @@ const Modal = () => {
         tempArrayList = JSON.parse(savedList);
       }
     }
+    
     const newEvent = {
       eventDate: eventDate,
       eventName: eventName,
