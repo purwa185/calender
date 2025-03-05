@@ -61,16 +61,10 @@ const DayView = () => {
       e.clientY +
       e.currentTarget.scrollTop -
       e.currentTarget.getBoundingClientRect().top;
-    console.log(
-      e.clientY,
-      e.currentTarget.scrollTop,
-      e.currentTarget.getBoundingClientRect().top
-    );
     const newStartMinutes = Math.round(dropY / 15) * 15;
     const duration =
       timeToMinutes(draggedEvent.eventEndTime) -
       timeToMinutes(draggedEvent.eventStartTime);
-
     const newStartTime = minutesToTime(newStartMinutes);
     const newEndTime = minutesToTime(newStartMinutes + duration);
 
@@ -94,6 +88,35 @@ const DayView = () => {
     );
     setArrayList(updatedEvents);
     setDraggedEvent(null);
+  };
+
+  const handleResizeStart = (e, index) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const startY = e.clientY;
+    document.body.style.cursor = "ns-resize"; 
+    const handleMouseMove = (moveEvent) => {
+      moveEvent.preventDefault();
+      const moveY = moveEvent.clientY - startY;
+      const newEndMinutes =
+        timeToMinutes(arrayList[index].eventEndTime) +
+        Math.round(moveY / 15) * 15;
+      const newEndTime = minutesToTime(newEndMinutes);
+      if (newEndMinutes - timeToMinutes(arrayList[index].eventStartTime) >= 15) {
+        setArrayList((prevEvents) =>
+          prevEvents.map((event, i) =>
+            i === index ? { ...event, eventEndTime: newEndTime } : event
+          )
+        );
+      }
+    };
+    const handleMouseUp = () => {
+      document.body.style.cursor = "default";
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
   };
 
   return (
@@ -138,39 +161,49 @@ const DayView = () => {
             const eventDuration = eventEnd - eventStart;
 
             return (
-              <div
-                key={index}
-                className={`event ${
-                  draggedEvent?.index === index ? "dragging" : ""
-                }`}
-                draggable="true"
-                onDragStart={(e) => handleDragStart(e, event, index)}
-                style={{
-                  top: `${eventStart}px`,
-                  height: `${eventDuration}px`,
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setModalInputValue({
-                    eventStartTime: event.eventStartTime,
-                    eventEndTime: event.eventEndTime,
-                    eventDate: lightFormat(
-                      new Date(selectedDate),
-                      "yyyy-MM-dd"
-                    ),
-                    eventName: event.eventName,
-                    eventDescription: event.eventDescription,
-                  });
-                  setDisplayModal(true);
-                }}
-              >
-                <div className="event-name-div">
-                  <span>{event.eventName}</span>
+              <>
+                <div
+                  key={index}
+                  className={`event ${
+                    draggedEvent?.index === index ? "dragging" : ""
+                  }`}
+                  draggable="true"
+                  onDragStart={(e) => handleDragStart(e, event, index)}
+                  style={{
+                    top: `${eventStart}px`,
+                    height: `${eventDuration}px`,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setModalInputValue({
+                      eventStartTime: event.eventStartTime,
+                      eventEndTime: event.eventEndTime,
+                      eventDate: lightFormat(
+                        new Date(selectedDate),
+                        "yyyy-MM-dd"
+                      ),
+                      eventName: event.eventName,
+                      eventDescription: event.eventDescription,
+                    });
+                    setDisplayModal(true);
+                  }}
+                >
+                  <div className="event-name-div">
+                    <span>{event.eventName}</span>
+                  </div>
+                  <div className="event-description-div">
+                    <span>{event.eventDescription}</span>
+                  </div>
                 </div>
-                <div className="event-description-div">
-                  <span>{event.eventDescription}</span>
-                </div>
-              </div>
+                <div
+                  className="resize-handle"
+                  style={{
+                    top: `${eventStart + eventDuration - 2}px`,
+                    height: `2px`,
+                  }}
+                  onMouseDown={(e) => handleResizeStart(e, index)}
+                ></div>
+              </>
             );
           })}
         </div>

@@ -109,6 +109,39 @@ const WeekView = () => {
     setDraggedEvent(null);
   };
 
+  const handleResizeStart = (e, dayIndex, eventIndex) => {
+    e.preventDefault();
+    e.stopPropagation();
+    document.body.style.cursor = "ns-resize";
+    const startY = e.clientY;
+    let prevEventHeight = timeToMinutes(weekArrayList[dayIndex][eventIndex].eventEndTime) - timeToMinutes(weekArrayList[dayIndex][eventIndex].eventStartTime);
+    const handleMouseMove = (moveEvent) => {
+      moveEvent.preventDefault();
+      const moveY = moveEvent.clientY - startY;
+      let newEventHeight = prevEventHeight + Math.round(moveY / 15) * 15;
+      if (newEventHeight < 15) return; 
+      setWeekArrayList((prevWeekArrayList) => {
+        return prevWeekArrayList.map((day, i) => {
+          if (i !== dayIndex) return day;
+          return day.map((event, j) => {
+            if (j !== eventIndex) return event;
+            const newEndTime = minutesToTime(timeToMinutes(event.eventStartTime) + newEventHeight);
+            return { ...event, eventEndTime: newEndTime };
+          });
+        });
+      });
+    };
+  
+    const handleMouseUp = () => {
+      document.body.style.cursor = "default";
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
   return (
     <>
       <div className="week-header">
@@ -150,43 +183,55 @@ const WeekView = () => {
                 const eventEnd = timeToMinutes(event.eventEndTime);
                 const eventDuration = eventEnd - eventStart;
                 return (
-                  <div
-                    key={eventIndex}
-                    className={`event-box ${
-                      draggedEvent?.eventIndex === eventIndex &&
-                      draggedEvent?.dayIndex === dayIndex
-                        ? "dragging"
-                        : ""
-                    }`}
-                    draggable="true"
-                    onDragStart={(e) =>
-                      handleDragStart(e, event, eventIndex, dayIndex)
-                    }
-                    onDragEnd={(e) => setDraggedEvent(null)}
-                    style={{
-                      top: `${eventStart}px`,
-                      height: `${eventDuration}px`,
-                      width: "150.8px",
-                      position: "absolute",
-                      backgroundColor: "rgb(30, 135, 247)",
-                      borderRadius: "5px",
-                      color: "rgb(255, 255, 255)",
-                      boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setModalInputValue({
-                        eventStartTime: event.eventStartTime,
-                        eventEndTime: event.eventEndTime,
-                        eventName: event.eventName,
-                        eventDescription: event.eventDescription,
-                        eventDate: lightFormat(new Date(date), "yyyy-MM-dd"),
-                      });
-                      setDisplayModal(true);
-                    }}
-                  >
-                    <div>{event.eventName}</div>
-                  </div>
+                  <>
+                    <div
+                      key={eventIndex}
+                      className={`event-box ${
+                        draggedEvent?.eventIndex === eventIndex &&
+                        draggedEvent?.dayIndex === dayIndex
+                          ? "dragging"
+                          : ""
+                      }`}
+                      draggable="true"
+                      onDragStart={(e) =>
+                        handleDragStart(e, event, eventIndex, dayIndex)
+                      }
+                      onDragEnd={(e) => setDraggedEvent(null)}
+                      style={{
+                        top: `${eventStart}px`,
+                        height: `${eventDuration}px`,
+                        width: "150.8px",
+                        position: "absolute",
+                        backgroundColor: "rgb(30, 135, 247)",
+                        borderRadius: "5px",
+                        color: "rgb(255, 255, 255)",
+                        boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setModalInputValue({
+                          eventStartTime: event.eventStartTime,
+                          eventEndTime: event.eventEndTime,
+                          eventName: event.eventName,
+                          eventDescription: event.eventDescription,
+                          eventDate: lightFormat(new Date(date), "yyyy-MM-dd"),
+                        });
+                        setDisplayModal(true);
+                      }}
+                    >
+                      <div>{event.eventName}</div>
+                    </div>
+                    <div
+                      className="resize-handle2"
+                      style={{
+                        top: `${eventStart + eventDuration - 3}px`,
+                        height: `3px`,
+                      }}
+                      onMouseDown={(e) =>
+                        handleResizeStart(e, dayIndex, eventIndex)
+                      }
+                    ></div>
+                  </>
                 );
               })}
             </div>
