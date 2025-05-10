@@ -1,0 +1,11 @@
+.section-right {
+    width: 80%;
+    background-color: #ffffff;
+    margin-right: 30px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+  
